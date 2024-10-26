@@ -40,6 +40,20 @@ public class HelloController {
         return "home";
     }
 
+    @GetMapping("/addnewsletter")
+    public String addNewsletter(Model model) {
+        return "addnewsletter";
+    }
+
+    @GetMapping("/addarticle1")
+    public String addarticle1(Model model) {
+        return "addnewsletter";
+    }
+
+    @GetMapping("/addarticle2")
+    public String addarticle2(Model model) {
+        return "addnewsletter";
+    }
 
     // Handle form submission and save content
     @PostMapping("/display")
