@@ -13,7 +13,7 @@
             padding: 0;
         }
         .header {
-            background-color: #3498db;
+            background-color: #1B7EC3;
             color: white;
             padding: 10px;
             display: flex;
@@ -21,13 +21,14 @@
             align-items: center;
         }
         .header-logo {
-            background-color: #2c3e50;
+            background-color: #1B7EC3;
             padding: 5px 10px;
             display: inline-block;
         }
         .header-nav {
             display: flex;
             align-items: center;
+            justify-content: flex-start;
         }
         .header-nav a {
             color: white;
@@ -50,7 +51,7 @@
             margin: 0;
         }
         .add-newsletter {
-            background-color: #5dade2;
+            background-color: #0F919E;
             color: white;
             border: none;
             padding: 10px 20px;
@@ -58,7 +59,7 @@
             cursor: pointer;
         }
         .year {
-            background-color: #3498db;
+            background-color: #1B7EC3;
             color: white;
             padding: 10px;
             margin-top: 20px;
@@ -80,8 +81,8 @@
         }
         .action-button {
             background-color: white;
-            border: 1px solid #3498db;
-            color: #3498db;
+            border: 1px solid #0F919E;
+            color: #0F919E;
             padding: 5px 10px;
             border-radius: 3px;
             cursor: pointer;
@@ -108,25 +109,24 @@
             <button class="add-newsletter">Add Newsletter</button>
         </div>
 
-        <c:forEach var="newsletter" items="${newsletters}">
+        <c:forEach var="year" items="${newsletters.stream().map(n -> n.getYear()).distinct().sorted((a, b) -> b.compareTo(a)).toList()}" varStatus="yearStatus">
             <div class="year">
-                     ${newsletter.getYear()}
+                    ${year}
             </div>
-
-            <c:forEach var="newsletter" items="${newsletters}">
+            <c:forEach var="newsletter" items="${newsletters.stream().filter(n -> n.getYear() == year).sorted((a, b) -> b.getPublicationDate().compareTo(a.getPublicationDate())).toList()}">
                 <div class="quarter">
                     <span>${newsletter.title}</span>
                     <div>
-                        <span class="quarter-info">
-                            <c:choose>
-                                <c:when test="${newsletter.status == 'published'}">
-                                    Published on ${newsletter.publicationDate}
-                                </c:when>
-                                <c:otherwise>
-                                    Saved on ${newsletter.publicationDate}
-                                </c:otherwise>
-                            </c:choose>
-                        </span>
+                <span class="quarter-info">
+                    <c:choose>
+                        <c:when test="${newsletter.status == 'published'}">
+                            Published on ${newsletter.publicationDate}
+                        </c:when>
+                        <c:otherwise>
+                            Saved on ${newsletter.publicationDate}
+                        </c:otherwise>
+                    </c:choose>
+                </span>
                         <button class="action-button">
                             <c:choose>
                                 <c:when test="${newsletter.status == 'published'}">
