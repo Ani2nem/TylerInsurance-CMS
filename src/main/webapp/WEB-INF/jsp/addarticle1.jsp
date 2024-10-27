@@ -142,7 +142,7 @@
         });
 
     function goBack() {
-        // Add your back functionality here
+        window.location.href = 'http://localhost:8081/addnewsletter'
         console.log("Back button clicked");
     }
 
