@@ -1,5 +1,9 @@
 package org.example;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +21,9 @@ public class HelloController {
     private EditorContentRepository repository;
     @Autowired
     private NewsletterRepository newsletterRepository;
+    @Autowired
+    private ArticleRepository articleRepository;
+
 
     // Show the input form
     @GetMapping("/input")
@@ -41,13 +48,44 @@ public class HelloController {
     }
 
     @GetMapping("/addnewsletter")
-    public String addNewsletter(Model model) {
+    public String addNewsletter(
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Integer quarter,
+            Model model) {
+
+        // Set default values if not provided
+        LocalDate now = LocalDate.now();
+        int currentYear = now.getYear();
+        int currentQuarter = ((now.getMonthValue() - 1) / 3) + 1;
+
+        // Use provided values or defaults
+        int selectedYear = (year != null) ? year : currentYear;
+        int selectedQuarter = (quarter != null) ? quarter : currentQuarter;
+
+        // Fetch articles from database
+        List<Article> articles = articleRepository.findByNewsletterYearAndQuarter(selectedYear, selectedQuarter);
+
+        // Debug logging
+        System.out.println("Fetched " + articles.size() + " articles for " + selectedYear + " Q" + selectedQuarter);
+        articles.forEach(article -> {
+            System.out.println("Article: " + article.getTitle() +
+                    ", Added: " + article.getAddedDate() +
+                    ", Newsletter: Year " + article.getNewsletter().getYear() +
+                    " Q" + article.getNewsletter().getQuarter());
+        });
+
+        // Add attributes to model
+        model.addAttribute("selectedYear", selectedYear);
+        model.addAttribute("selectedQuarter", selectedQuarter);
+        model.addAttribute("articles", articles);
+
         return "addnewsletter";
     }
 
+
     @GetMapping("/addarticle1")
     public String addarticle1(Model model) {
-        return "addnewsletter";
+        return "addarticle1";
     }
 
     @GetMapping("/addarticle2")

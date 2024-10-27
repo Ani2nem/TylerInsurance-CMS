@@ -95,4 +95,5 @@ public class Newsletter {
     public void setArticles(List<Article> articles) {
         this.articles = articles;
     }
+
 }
