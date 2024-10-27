@@ -47,12 +47,12 @@ public class HelloController {
 
     @GetMapping("/addarticle1")
     public String addarticle1(Model model) {
-        return "addnewsletter";
+        return "addarticle1";
     }
 
     @GetMapping("/addarticle2")
     public String addarticle2(Model model) {
-        return "addnewsletter";
+        return "addarticle2";
     }
 
     // Handle form submission and save content
