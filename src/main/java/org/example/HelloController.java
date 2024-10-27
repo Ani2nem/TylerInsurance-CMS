@@ -90,7 +90,7 @@ public class HelloController {
 
     @GetMapping("/addarticle2")
     public String addarticle2(Model model) {
-        return "addnewsletter";
+        return "addarticle2";
     }
 
     // Handle form submission and save content

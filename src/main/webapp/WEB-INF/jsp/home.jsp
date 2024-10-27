@@ -64,6 +64,13 @@
             padding: 10px;
             margin-top: 20px;
             cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .year-icon {
+            font-size: 1.2em;
+            margin-left: 10px;
         }
         .quarter {
             background-color: white;
@@ -87,46 +94,55 @@
             border-radius: 3px;
             cursor: pointer;
         }
+        .quarters-container {
+            display: none;
+        }
+        .quarters-container.show {
+            display: block;
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-logo">Insurance Filings</div>
-        <nav class="header-nav">
-            <a href="#">Join Requests</a>
-            <a href="#">Search</a>
-            <a href="#">Manage Admins & Search Users</a>
-            <a href="#">Reports</a>
-            <a href="#">Admin</a>
-            <a href="#">Email</a>
-            <a href="#">Content Manager</a>
-            <a href="#" class="my-account">My Account</a>
-        </nav>
-    </div>
+<div class="header">
+    <div class="header-logo">Insurance Filings</div>
+    <nav class="header-nav">
+        <a href="#">Join Requests</a>
+        <a href="#">Search</a>
+        <a href="#">Manage Admins & Search Users</a>
+        <a href="#">Reports</a>
+        <a href="#">Admin</a>
+        <a href="#">Email</a>
+        <a href="#">Content Manager</a>
+        <a href="#" class="my-account">My Account</a>
+    </nav>
+</div>
+
     <div class="content">
         <div class="title-container">
             <h1>Newsletter</h1>
             <button class="add-newsletter" href="/addnewsletter">Add Newsletter</button>
-        </div>
+     </div>
 
-        <c:forEach var="year" items="${newsletters.stream().map(n -> n.getYear()).distinct().sorted((a, b) -> b.compareTo(a)).toList()}" varStatus="yearStatus">
-            <div class="year">
-                    ${year}
-            </div>
+    <c:forEach var="year" items="${newsletters.stream().map(n -> n.getYear()).distinct().sorted((a, b) -> b.compareTo(a)).toList()}" varStatus="yearStatus">
+        <div class="year" onclick="toggleQuarters(this)">
+                ${year}
+            <i class="year-icon fa fa-caret-down"></i>
+        </div>
+        <div class="quarters-container">
             <c:forEach var="newsletter" items="${newsletters.stream().filter(n -> n.getYear() == year).sorted((a, b) -> b.getPublicationDate().compareTo(a.getPublicationDate())).toList()}">
                 <div class="quarter">
                     <span>${newsletter.title}</span>
                     <div>
-                <span class="quarter-info">
-                    <c:choose>
-                        <c:when test="${newsletter.status == 'published'}">
-                            Published on ${newsletter.publicationDate}
-                        </c:when>
-                        <c:otherwise>
-                            Saved on ${newsletter.publicationDate}
-                        </c:otherwise>
-                    </c:choose>
-                </span>
+                        <span class="quarter-info">
+                            <c:choose>
+                                <c:when test="${newsletter.status == 'published'}">
+                                    Published on ${newsletter.publicationDate}
+                                </c:when>
+                                <c:otherwise>
+                                    Saved on ${newsletter.publicationDate}
+                                </c:otherwise>
+                            </c:choose>
+                        </span>
                         <button class="action-button">
                             <c:choose>
                                 <c:when test="${newsletter.status == 'published'}">
@@ -140,7 +156,26 @@
                     </div>
                 </div>
             </c:forEach>
-        </c:forEach>
-    </div>
+        </div>
+    </c:forEach>
+</div>
+
+<script>
+    function toggleQuarters(yearElement) {
+        const quartersContainer = yearElement.nextElementSibling;
+        quartersContainer.classList.toggle('show');
+        const icon = yearElement.querySelector('.year-icon');
+        if (quartersContainer.classList.contains('show')) {
+            icon.classList.remove('fa-caret-down');
+            icon.classList.add('fa-caret-up');
+        } else {
+            icon.classList.remove('fa-caret-up');
+            icon.classList.add('fa-caret-down');
+        }
+    }
+</script>
+
+<!-- Include Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 </body>
 </html>

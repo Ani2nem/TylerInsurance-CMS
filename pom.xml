@@ -70,8 +70,6 @@
       <version>42.2.20</version> <!-- You can adjust the version if necessary -->
     </dependency>
 
-
-
   </dependencies>
 
   <build>
