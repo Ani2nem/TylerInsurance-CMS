@@ -116,11 +116,12 @@
         <a href="#" class="my-account">My Account</a>
     </nav>
 </div>
-<div class="content">
-    <div class="title-container">
-        <h1>Newsletter</h1>
-        <button class="add-newsletter">Add Newsletter</button>
-    </div>
+
+    <div class="content">
+        <div class="title-container">
+            <h1>Newsletter</h1>
+            <button class="add-newsletter" href="/addnewsletter">Add Newsletter</button>
+     </div>
 
     <c:forEach var="year" items="${newsletters.stream().map(n -> n.getYear()).distinct().sorted((a, b) -> b.compareTo(a)).toList()}" varStatus="yearStatus">
         <div class="year" onclick="toggleQuarters(this)">
