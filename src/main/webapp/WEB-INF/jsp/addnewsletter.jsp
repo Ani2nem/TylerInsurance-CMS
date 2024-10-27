@@ -215,17 +215,16 @@
         }
 
     .add-article-button {
-        width: 150px;
-        padding: 9px;
-        background-color: #4784c0;
-        color: white;
-        border: none;
-        border-radius: 20px;
-        cursor: pointer;
-        text-align: center;
-        text-decoration: none;
-        font-size: 16px;
-        margin-right: 10px;
+       background-color: #0F919E;
+       color: white;
+       border: none;
+       padding: 10px 25px;
+       border-radius: 5px;
+       cursor: pointer;
+       text-align: center;
+       text-decoration: none;
+       font-size: 14px;
+       margin-right: 10px;
     }
     </style>
 
@@ -257,7 +256,7 @@
 <div class="content">
     <div class="title-container">
         <h1>Quarterly Newsletter</h1>
-        <a href="/addarticle1" class="add-article-button">ADD ARTICLE</a>
+        <a href="/addarticle1" class="add-article-button">Add Article</a>
         </div>
 
         <div class="filters">
