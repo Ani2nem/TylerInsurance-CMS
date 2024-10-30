@@ -1,5 +1,5 @@
 package org.example;
-
+import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public class HelloController {
         return "home";
     }
 
-    @PostMapping("/addnewsletter")
+    @GetMapping("/addnewsletter")
     public String addNewsletter(
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) Integer quarter,
@@ -85,12 +85,6 @@ public class HelloController {
             newsletterRepository.save(nwletter);
         }
 
-//        model.addAttribute("year",selectedYear);
-//        model.addAttribute("quarter",selectedQuarter);
-        //newsletterhome(nwletter.getNewsletterId(),model);
-
-        //return "redirect:/newsletterhome";
-
         Newsletter n_letter = newsletterRepository.findByYearAndQuarter(year,quarter);
         List<Article> articles=articleRepository.getArticlesByNewsletter_NewsletterId(n_letter.getNewsletterId());
         model.addAttribute("articles",articles);
@@ -113,51 +107,39 @@ public class HelloController {
         return "addarticle1";
     }
 
-//    @GetMapping("/addarticle2")
-//    public String addarticle2(@RequestParam("title") String title,
-//                              @RequestParam("subtitle") String subtitle,
-//                              @RequestParam("metatitle") String metatitle,
-//                              @RequestParam("metadescription") String metadescription,
-//                              @RequestParam("summary") String summary,
-//                              @RequestParam("date") Date date,
-//                              Model model) {
-//        Article article=new Article();
-//        article.setTitle(title);
-//        article.setSubtitle(subtitle);
-//        article.setMetaTitle(metatitle);
-//        article.setMetaDescription(metadescription);
-//        article.setAddedDate(date);
-//
-//        articleRepository.save(article);
-//
-//
-//        //model.addAttribute("articleTitle",title);
-//        return "addarticle2";
-//    }
-
-    @PostMapping("/articleSave")
+    @GetMapping("/articleSave")
     public String submitArticle(@RequestParam("title") String title,
                                 @RequestParam("subtitle") String subtitle,
                                 @RequestParam("metatitle") String metatitle,
                                 @RequestParam("metadescription") String metadescription,
                                 @RequestParam("summary") String summary,
-                                @RequestParam("date") Date date,
+                                @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
                                 @RequestParam("Content") String content,
+                                @RequestParam("newsletterId") Long nwletterId,
+                                @RequestParam("status") String status,
                               Model model){
 
         Article article=new Article();
         article.setTitle(title);
         article.setSubtitle(subtitle);
+        article.setSummary(summary);
         article.setMetaTitle(metatitle);
         article.setMetaDescription(metadescription);
         article.setAddedDate(date);
         article.setContent(content);
 
+        //Fetch newsletter by id
+        Newsletter nl=newsletterRepository.findByNewsletterId(nwletterId);
+        article.setNewsletter(nl);
+        article.setStatus(status);
+
 
         articleRepository.save(article);
-
+        //Newsletter nwletter = newsletterRepository.findByYearAndQuarter(year,quarter);
+        List<Article> articles=articleRepository.getArticlesByNewsletter_NewsletterId(nl.getNewsletterId());
+        model.addAttribute("articles",articles);
         //Make the entire thing single page
-        return "redirect:/newsletterhome";
+        return "newsletterhome";
 
     }
 

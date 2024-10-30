@@ -119,4 +119,16 @@ public class Article {
     public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
     }
+
+    @PrePersist
+    protected void onCreate() {
+        this.addedDate = new Date(); // Sets to the current date
+        this.updatedDate= new Date();       // Sets to the current datetime
+    }
+
+    // Automatically update updatedAt on every update
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedDate = new Date();       // Updates to the current datetime
+    }
 }

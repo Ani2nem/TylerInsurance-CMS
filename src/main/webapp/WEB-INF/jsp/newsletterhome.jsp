@@ -256,7 +256,9 @@
 <div class="content">
     <div class="title-container">
         <h1>Quarterly Newsletter</h1>
-        </div>
+        <a href="/addarticle1" class="add-article-button">ADD ARTICLE</a>
+    </div>
+        <% /** <div class="filters">
 
             <div class="select-group">
                 <label class="select-label">Year</label>
