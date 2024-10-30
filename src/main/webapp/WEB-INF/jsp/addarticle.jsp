@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Insurance Filings - Newsletter</title>
+    <title>Insurance Filings - Add Article</title>
     <%-- Include JSTL core tag library --%>
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
     <script src="https://cdn.ckeditor.com/ckeditor5/38.0.1/classic/ckeditor.js"></script>
@@ -83,12 +83,18 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
         }
         .button:hover {
             background-color: #0F919E;
         }
-        .ck-editor__editable {
-            min-height: 300px;
+        .ck-editor__editable_inline {
+            min-height: 250px !important; /* Default for summary */
+        }
+        #contentEditor + .ck-editor .ck-editor__editable_inline {
+            min-height: 500px !important; /* Specific for newsletter content */
         }
     </style>
 </head>
@@ -106,7 +112,7 @@
         <a href="#" class="my-account">My Account</a>
     </nav>
 </div>
-<form class="input-form">
+<form class="input-form" action="/submit-article" method="post">
     <div class="left-column">
         <label for="title">Title</label>
         <input type="text" id="title" name="title">
@@ -125,31 +131,40 @@
         <textarea id="metadescription" name="metadescription"></textarea>
     </div>
     <div class="full-width">
-        <label for="editor">Summary</label>
-        <div id="editor"></div>
+        <label for="summaryEditor">Summary</label>
+        <textarea id="summaryEditor" name="summary"></textarea>
+    </div>
+    <div class="full-width">
+        <label for="contentEditor">Newsletter Content</label>
+        <textarea id="contentEditor" name="content"></textarea>
     </div>
     <div class="button-container">
-        <button type="button" class="button" onclick="goBack()">Back</button>
-        <button type="button" class="button" onclick="goNext()">Next</button>
+        <a href="http://localhost:8081/addnewsletter" class="button">Back</a>
+        <button type="submit" class="button" name="action" value="save">Save</button>
+        <button type="submit" class="button" name="action" value="publish">Publish</button>
     </div>
 </form>
 
 <script>
+    let summaryEditor, contentEditor;
+
     ClassicEditor
-        .create(document.querySelector('#editor'))
+        .create(document.querySelector('#summaryEditor'))
+        .then(editor => {
+            summaryEditor = editor;
+        })
         .catch(error => {
             console.error(error);
         });
 
-    function goBack() {
-        window.location.href = 'http://localhost:8081/addnewsletter'
-        console.log("Back button clicked");
-    }
-
-    function goNext() {
-        window.location.href = 'http://localhost:8081/addarticle2';
-        console.log("Next button clicked");
-    }
+    ClassicEditor
+        .create(document.querySelector('#contentEditor'))
+        .then(editor => {
+            contentEditor = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
 </script>
 </body>
 </html>
