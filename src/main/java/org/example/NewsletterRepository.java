@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface NewsletterRepository extends JpaRepository<Newsletter, Long> {
     // This method will automatically be implemented by Spring Data JPA
-    List<Newsletter> findByYearAndQuarter(Integer year, Integer quarter);
+    Newsletter findByYearAndQuarter(Integer year, Integer quarter);
 }

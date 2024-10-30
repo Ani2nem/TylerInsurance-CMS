@@ -232,7 +232,7 @@
             function handleSelectChange() {
                 const year = document.getElementById('yearSelect').value;
                 const quarter = document.getElementById('quarterSelect').value;
-                window.location.href = '/addnewsletter?year=' + year + '&quarter=' + quarter;
+                window.location.href = '/newsletterhome?year=' + year + '&quarter=' + quarter;
             }
     </script>
 
@@ -259,7 +259,7 @@
         <a href="/addarticle1" class="add-article-button">Add Article</a>
         </div>
 
-        <div class="filters">
+        <% /** <div class="filters">
             <div class="select-group">
                 <label class="select-label">Year</label>
                 <select id="yearSelect" onchange="handleSelectChange()">
@@ -277,7 +277,7 @@
                     </c:forEach>
                 </select>
             </div>
-        </div>
+        </div> **/ %>
 
         <div class="newsletter-content">
             <c:choose>

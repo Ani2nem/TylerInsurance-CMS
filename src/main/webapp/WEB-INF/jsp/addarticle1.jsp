@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -106,7 +106,7 @@
         <a href="#" class="my-account">My Account</a>
     </nav>
 </div>
-<form class="input-form">
+<form class="input-form" action="/addarticle2" method="get">
     <div class="left-column">
         <label for="title">Title</label>
         <input type="text" id="title" name="title">
@@ -142,7 +142,7 @@
         });
 
     function goBack() {
-        window.location.href = 'http://localhost:8081/addnewsletter'
+        window.location.href = 'http://localhost:8081/newsletterhome'
         console.log("Back button clicked");
     }
 

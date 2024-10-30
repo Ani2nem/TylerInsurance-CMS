@@ -1,6 +1,7 @@
 package org.example;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 @Controller
 public class HelloController {
@@ -47,7 +50,7 @@ public class HelloController {
         return "home";
     }
 
-    @GetMapping("/addnewsletter")
+    @PostMapping("/addnewsletter")
     public String addNewsletter(
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) Integer quarter,
@@ -55,31 +58,53 @@ public class HelloController {
 
         // Set default values if not provided
         LocalDate now = LocalDate.now();
-        int currentYear = now.getYear();
-        int currentQuarter = ((now.getMonthValue() - 1) / 3) + 1;
+        LocalDateTime timeNow = LocalDateTime.now();
+        Integer currentYear = now.getYear();
+        Integer currentQuarter = ((now.getMonthValue() - 1) / 3) + 1;
 
         // Use provided values or defaults
-        int selectedYear = (year != null) ? year : currentYear;
-        int selectedQuarter = (quarter != null) ? quarter : currentQuarter;
+        Integer selectedYear = (year != null) ? year : currentYear;
+        Integer selectedQuarter = (quarter != null) ? quarter : currentQuarter;
+        System.out.println(now);
 
-        // Fetch articles from database
-        List<Article> articles = articleRepository.findByNewsletterYearAndQuarter(selectedYear, selectedQuarter);
+        //If newsletter with this title or quarter/year doesn't exist
+        //Then create an object and save to repo
 
-        // Debug logging
-        System.out.println("Fetched " + articles.size() + " articles for " + selectedYear + " Q" + selectedQuarter);
-        articles.forEach(article -> {
-            System.out.println("Article: " + article.getTitle() +
-                    ", Added: " + article.getAddedDate() +
-                    ", Newsletter: Year " + article.getNewsletter().getYear() +
-                    " Q" + article.getNewsletter().getQuarter());
-        });
 
-        // Add attributes to model
-        model.addAttribute("selectedYear", selectedYear);
-        model.addAttribute("selectedQuarter", selectedQuarter);
-        model.addAttribute("articles", articles);
+        Newsletter nwletter = newsletterRepository.findByYearAndQuarter(selectedYear,selectedQuarter);
+        //Create a new Newsletter object
 
-        return "addnewsletter";
+        if(nwletter==null) {
+            nwletter = new Newsletter();
+            nwletter.setYear(selectedYear);
+            nwletter.setQuarter(selectedQuarter);
+            nwletter.setTitle(""+selectedYear+ " Quarter "+selectedQuarter );
+            nwletter.setStatus("draft");
+            //nwletter.setPublicationDate(now);
+           // nwletter.setUpdatedAt(timeNow);
+            newsletterRepository.save(nwletter);
+        }
+
+//        model.addAttribute("year",selectedYear);
+//        model.addAttribute("quarter",selectedQuarter);
+        //newsletterhome(nwletter.getNewsletterId(),model);
+
+        //return "redirect:/newsletterhome";
+
+        Newsletter n_letter = newsletterRepository.findByYearAndQuarter(year,quarter);
+        List<Article> articles=articleRepository.getArticlesByNewsletter_NewsletterId(n_letter.getNewsletterId());
+        model.addAttribute("articles",articles);
+        return "newsletterhome";
+    }
+
+    @GetMapping("/newsletterhome")
+    public String newsletterhome(@RequestParam(required = false) Integer year,
+                                 @RequestParam(required = false) Integer quarter,
+                                 Model model){
+        Newsletter nwletter = newsletterRepository.findByYearAndQuarter(year,quarter);
+        List<Article> articles=articleRepository.getArticlesByNewsletter_NewsletterId(nwletter.getNewsletterId());
+        model.addAttribute("articles",articles);
+        return "newsletterhome";
     }
 
 
@@ -88,10 +113,54 @@ public class HelloController {
         return "addarticle1";
     }
 
-    @GetMapping("/addarticle2")
-    public String addarticle2(Model model) {
-        return "addarticle2";
+//    @GetMapping("/addarticle2")
+//    public String addarticle2(@RequestParam("title") String title,
+//                              @RequestParam("subtitle") String subtitle,
+//                              @RequestParam("metatitle") String metatitle,
+//                              @RequestParam("metadescription") String metadescription,
+//                              @RequestParam("summary") String summary,
+//                              @RequestParam("date") Date date,
+//                              Model model) {
+//        Article article=new Article();
+//        article.setTitle(title);
+//        article.setSubtitle(subtitle);
+//        article.setMetaTitle(metatitle);
+//        article.setMetaDescription(metadescription);
+//        article.setAddedDate(date);
+//
+//        articleRepository.save(article);
+//
+//
+//        //model.addAttribute("articleTitle",title);
+//        return "addarticle2";
+//    }
+
+    @PostMapping("/articleSave")
+    public String submitArticle(@RequestParam("title") String title,
+                                @RequestParam("subtitle") String subtitle,
+                                @RequestParam("metatitle") String metatitle,
+                                @RequestParam("metadescription") String metadescription,
+                                @RequestParam("summary") String summary,
+                                @RequestParam("date") Date date,
+                                @RequestParam("Content") String content,
+                              Model model){
+
+        Article article=new Article();
+        article.setTitle(title);
+        article.setSubtitle(subtitle);
+        article.setMetaTitle(metatitle);
+        article.setMetaDescription(metadescription);
+        article.setAddedDate(date);
+        article.setContent(content);
+
+
+        articleRepository.save(article);
+
+        //Make the entire thing single page
+        return "redirect:/newsletterhome";
+
     }
+
 
     // Handle form submission and save content
     @PostMapping("/display")
