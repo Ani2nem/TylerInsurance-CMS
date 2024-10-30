@@ -2,6 +2,7 @@ package org.example;
 
 import javax.persistence.*;
 import java.util.Date;
+
 import java.util.List;
 
 @Entity
@@ -94,6 +95,18 @@ public class Newsletter {
 
     public void setArticles(List<Article> articles) {
         this.articles = articles;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.publicationDate = new Date(); // Sets to the current date
+        this.updatedAt = new Date();       // Sets to the current datetime
+    }
+
+    // Automatically update updatedAt on every update
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = new Date();       // Updates to the current datetime
     }
 
 }

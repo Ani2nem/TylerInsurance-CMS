@@ -1,6 +1,7 @@
 package org.example;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -55,31 +56,43 @@ public class HelloController {
 
         // Set default values if not provided
         LocalDate now = LocalDate.now();
-        int currentYear = now.getYear();
-        int currentQuarter = ((now.getMonthValue() - 1) / 3) + 1;
+        LocalDateTime timeNow = LocalDateTime.now();
+        Integer currentYear = now.getYear();
+        Integer currentQuarter = ((now.getMonthValue() - 1) / 3) + 1;
 
         // Use provided values or defaults
-        int selectedYear = (year != null) ? year : currentYear;
-        int selectedQuarter = (quarter != null) ? quarter : currentQuarter;
+        Integer selectedYear = (year != null) ? year : currentYear;
+        Integer selectedQuarter = (quarter != null) ? quarter : currentQuarter;
+        System.out.println(now);
 
-        // Fetch articles from database
-        List<Article> articles = articleRepository.findByNewsletterYearAndQuarter(selectedYear, selectedQuarter);
+        //If newsletter with this title or quarter/year doesn't exist
+        //Then create an object and save to repo
 
-        // Debug logging
-        System.out.println("Fetched " + articles.size() + " articles for " + selectedYear + " Q" + selectedQuarter);
-        articles.forEach(article -> {
-            System.out.println("Article: " + article.getTitle() +
-                    ", Added: " + article.getAddedDate() +
-                    ", Newsletter: Year " + article.getNewsletter().getYear() +
-                    " Q" + article.getNewsletter().getQuarter());
-        });
 
-        // Add attributes to model
-        model.addAttribute("selectedYear", selectedYear);
-        model.addAttribute("selectedQuarter", selectedQuarter);
-        model.addAttribute("articles", articles);
+        Newsletter nwletter = newsletterRepository.findByYearAndQuarter(selectedYear,selectedQuarter);
+        //Create a new Newsletter object
 
-        return "addnewsletter";
+        if(nwletter==null) {
+            nwletter = new Newsletter();
+            nwletter.setYear(selectedYear);
+            nwletter.setQuarter(selectedQuarter);
+            nwletter.setTitle(""+selectedYear+ " Quarter "+selectedQuarter );
+            nwletter.setStatus("draft");
+            //nwletter.setPublicationDate(now);
+            // nwletter.setUpdatedAt(timeNow);
+            newsletterRepository.save(nwletter);
+        }
+
+//        model.addAttribute("year",selectedYear);
+//        model.addAttribute("quarter",selectedQuarter);
+        //newsletterhome(nwletter.getNewsletterId(),model);
+
+        //return "redirect:/newsletterhome";
+
+        Newsletter n_letter = newsletterRepository.findByYearAndQuarter(year,quarter);
+        List<Article> articles=articleRepository.getArticlesByNewsletter_NewsletterId(n_letter.getNewsletterId());
+        model.addAttribute("articles",articles);
+        return "newsletterhome";
     }
 
 
