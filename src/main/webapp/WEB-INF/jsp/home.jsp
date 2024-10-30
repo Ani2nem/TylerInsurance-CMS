@@ -75,14 +75,14 @@
             align-items: center;
         }
         .year-icon::after {
-            content: '\f0d7'; /* fa-caret-down */
+            content: '\f0d7';
             font-family: 'Font Awesome 5 Free';
             font-weight: 900;
             font-size: 1.2em;
             margin-left: 10px;
         }
         .year-toggle:checked + .year-label .year-icon::after {
-            content: '\f0d8'; /* fa-caret-up */
+            content: '\f0d8';
         }
         .quarters-container {
             max-height: 0;
@@ -90,7 +90,7 @@
             transition: max-height 0.3s ease-out;
         }
         .year-toggle:checked ~ .quarters-container {
-            max-height: 1000px; /* Adjust this value based on your content */
+            max-height: 1000px;
         }
         .quarter {
             background-color: white;
@@ -114,6 +114,57 @@
             border-radius: 3px;
             cursor: pointer;
         }
+
+        /* Styles for the pop-up */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .popup-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .popup-content h2 {
+            margin-top: 0;
+        }
+        .popup-content select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .popup-content .button {
+            background-color: #0F919E;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .popup-content .button:last-child {
+            background-color: #ccc;
+        }
+        #popup-toggle {
+            display: none;
+        }
+        #popup-toggle:checked + .popup-overlay {
+            opacity: 1;
+            visibility: visible;
+        }
     </style>
 </head>
 <body>
@@ -134,7 +185,7 @@
 <div class="content">
     <div class="title-container">
         <h1>Newsletter</h1>
-        <button class="add-newsletter" onclick="window.location.href='http://localhost:8081/addnewsletter'">Add Newsletter</button>
+        <label for="popup-toggle" class="add-newsletter">Add Newsletter</label>
     </div>
 
     <c:forEach var="year" items="${newsletters.stream().map(n -> n.getYear()).distinct().sorted((a, b) -> b.compareTo(a)).toList()}" varStatus="yearStatus">
@@ -177,37 +228,30 @@
     </c:forEach>
 </div>
 
-<script>
-    let editor;
-
-    ClassicEditor
-        .create(document.querySelector('#editor'))
-        .then(newEditor => {
-            editor = newEditor;
-        })
-        .catch(error => {
-            console.error(error);
-        });
-
-    function saveContent() {
-        const content = editor.getData();
-        console.log('Saving content:', content);
-        // Add your save logic here
-    }
-
-    function publishContent() {
-        const content = editor.getData();
-        console.log('Publishing content:', content);
-        // Add your publish logic here
-    }
-
-    function goBack() {
-        window.location.href = 'http://localhost:8081/addarticle1';
-        console.log('Going back');
-        // For example, to go back to the previous page:
-        // window.history.back();
-    }
-</script>
+<!-- Pop-up component -->
+<input type="checkbox" id="popup-toggle">
+<div class="popup-overlay">
+    <div class="popup-content">
+        <h2>Select Year and Quarter</h2>
+        <form action="http://localhost:8081/addnewsletter" method="get">
+            <select name="year" required>
+                <option value="">Select Year</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+            </select>
+            <select name="quarter" required>
+                <option value="">Select Quarter</option>
+                <option value="1">Quarter 1</option>
+                <option value="2">Quarter 2</option>
+                <option value="3">Quarter 3</option>
+                <option value="4">Quarter 4</option>
+            </select>
+            <button type="submit" class="button">Add</button>
+            <label for="popup-toggle" class="button">Cancel</label>
+        </form>
+    </div>
+</div>
 
 <!-- Include Font Awesome for icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
