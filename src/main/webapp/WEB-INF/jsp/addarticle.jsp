@@ -83,18 +83,12 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
         }
         .button:hover {
             background-color: #0F919E;
         }
-        .ck-editor__editable_inline {
-            min-height: 250px !important; /* Default for summary */
-        }
-        #contentEditor + .ck-editor .ck-editor__editable_inline {
-            min-height: 500px !important; /* Specific for newsletter content */
+        .ck-editor__editable {
+            min-height: 300px;
         }
     </style>
 </head>

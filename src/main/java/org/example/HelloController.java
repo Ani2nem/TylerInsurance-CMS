@@ -14,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 @Controller
 public class HelloController {
@@ -48,7 +50,7 @@ public class HelloController {
         return "home";
     }
 
-    @GetMapping("/addnewsletter")
+    @PostMapping("/addnewsletter")
     public String addNewsletter(
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) Integer quarter,
@@ -79,7 +81,7 @@ public class HelloController {
             nwletter.setTitle(""+selectedYear+ " Quarter "+selectedQuarter );
             nwletter.setStatus("draft");
             //nwletter.setPublicationDate(now);
-            // nwletter.setUpdatedAt(timeNow);
+           // nwletter.setUpdatedAt(timeNow);
             newsletterRepository.save(nwletter);
         }
 
@@ -95,11 +97,70 @@ public class HelloController {
         return "newsletterhome";
     }
 
-
-    @GetMapping("/addarticle")
-    public String addarticle(Model model) {
-        return "addarticle";
+    @GetMapping("/newsletterhome")
+    public String newsletterhome(@RequestParam(required = false) Integer year,
+                                 @RequestParam(required = false) Integer quarter,
+                                 Model model){
+        Newsletter nwletter = newsletterRepository.findByYearAndQuarter(year,quarter);
+        List<Article> articles=articleRepository.getArticlesByNewsletter_NewsletterId(nwletter.getNewsletterId());
+        model.addAttribute("articles",articles);
+        return "newsletterhome";
     }
+
+
+    @GetMapping("/addarticle1")
+    public String addarticle1(Model model) {
+        return "addarticle1";
+    }
+
+//    @GetMapping("/addarticle2")
+//    public String addarticle2(@RequestParam("title") String title,
+//                              @RequestParam("subtitle") String subtitle,
+//                              @RequestParam("metatitle") String metatitle,
+//                              @RequestParam("metadescription") String metadescription,
+//                              @RequestParam("summary") String summary,
+//                              @RequestParam("date") Date date,
+//                              Model model) {
+//        Article article=new Article();
+//        article.setTitle(title);
+//        article.setSubtitle(subtitle);
+//        article.setMetaTitle(metatitle);
+//        article.setMetaDescription(metadescription);
+//        article.setAddedDate(date);
+//
+//        articleRepository.save(article);
+//
+//
+//        //model.addAttribute("articleTitle",title);
+//        return "addarticle2";
+//    }
+
+    @PostMapping("/articleSave")
+    public String submitArticle(@RequestParam("title") String title,
+                                @RequestParam("subtitle") String subtitle,
+                                @RequestParam("metatitle") String metatitle,
+                                @RequestParam("metadescription") String metadescription,
+                                @RequestParam("summary") String summary,
+                                @RequestParam("date") Date date,
+                                @RequestParam("Content") String content,
+                              Model model){
+
+        Article article=new Article();
+        article.setTitle(title);
+        article.setSubtitle(subtitle);
+        article.setMetaTitle(metatitle);
+        article.setMetaDescription(metadescription);
+        article.setAddedDate(date);
+        article.setContent(content);
+
+
+        articleRepository.save(article);
+
+        //Make the entire thing single page
+        return "redirect:/newsletterhome";
+
+    }
+
 
     // Handle form submission and save content
     @PostMapping("/display")

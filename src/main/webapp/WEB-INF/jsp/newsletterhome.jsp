@@ -1,4 +1,4 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -232,7 +232,7 @@
             function handleSelectChange() {
                 const year = document.getElementById('yearSelect').value;
                 const quarter = document.getElementById('quarterSelect').value;
-                window.location.href = '/addnewsletter?year=' + year + '&quarter=' + quarter;
+                window.location.href = '/newsletterhome?year=' + year + '&quarter=' + quarter;
             }
     </script>
 
@@ -256,10 +256,8 @@
 <div class="content">
     <div class="title-container">
         <h1>Quarterly Newsletter</h1>
-        <a href="/addarticle" class="add-article-button">Add Article</a>
         </div>
 
-        <div class="filters">
             <div class="select-group">
                 <label class="select-label">Year</label>
                 <select id="yearSelect" onchange="handleSelectChange()">
@@ -277,7 +275,7 @@
                     </c:forEach>
                 </select>
             </div>
-        </div>
+        </div> **/ %>
 
         <div class="newsletter-content">
             <c:choose>
