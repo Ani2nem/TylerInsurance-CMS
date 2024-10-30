@@ -256,7 +256,7 @@
 <div class="content">
     <div class="title-container">
         <h1>Quarterly Newsletter</h1>
-        <a href="/addarticle1" class="add-article-button">Add Article</a>
+        <a href="/addarticle" class="add-article-button">Add Article</a>
         </div>
 
         <div class="filters">
