@@ -83,14 +83,9 @@ public class HelloController {
     }
 
 
-    @GetMapping("/addarticle1")
-    public String addarticle1(Model model) {
-        return "addarticle1";
-    }
-
-    @GetMapping("/addarticle2")
-    public String addarticle2(Model model) {
-        return "addarticle2";
+    @GetMapping("/addarticle")
+    public String addarticle(Model model) {
+        return "addarticle";
     }
 
     // Handle form submission and save content
