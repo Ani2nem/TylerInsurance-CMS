@@ -107,6 +107,38 @@ public class HelloController {
         return "addarticle";
     }
 
+    /*
+        Edit Article
+        Will be called when someone wants to edit an article
+        @GetMapping("/edit")
+        public String editContent(@RequestParam("id") Long id, Model model) {
+            // Fetch content from the database by ID
+            EditorContent content = repository.findById(id).orElse(null);
+            if (content != null) {
+                model.addAttribute("name", content.getContent());
+            }
+            return "input";  // Show the content in CKEditor for editing
+        }
+     */
+
+    @GetMapping("/editArticle")
+    public String editArticle(@RequestParam("id") Long id, Model model) {
+        Article content = articleRepository.findById(id).orElse(null);
+        System.out.println(content.getTitle());
+        if (content != null) {
+            model.addAttribute("title", content.getTitle());
+            model.addAttribute("subTitle", content.getSubtitle());
+            model.addAttribute("date", content.getAddedDate());
+            model.addAttribute("metaTitle", content.getMetaTitle());
+            model.addAttribute("metaDescription", content.getMetaDescription());
+            model.addAttribute("summary", content.getSummary());
+            model.addAttribute("newsletterContent", content.getContent());
+        }
+        return "addarticle";
+    }
+
+
+
     @GetMapping("/articleSave")
     public String submitArticle(@RequestParam("title") String title,
                                 @RequestParam("subtitle") String subtitle,
