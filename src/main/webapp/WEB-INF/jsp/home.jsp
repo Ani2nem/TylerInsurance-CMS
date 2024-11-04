@@ -233,7 +233,7 @@
 <div class="popup-overlay">
     <div class="popup-content">
         <h2>Select Year and Quarter</h2>
-        <form action="http://localhost:8081/addnewsletter" method="get">
+        <form action="/addnewsletter" method="get">
             <select name="year" required>
                 <option value="">Select Year</option>
                 <option value="2024">2024</option>

@@ -106,7 +106,7 @@
         <a href="#" class="my-account">My Account</a>
     </nav>
 </div>
-<form class="input-form" action="/submit-article" method="post">
+<form class="input-form" action="/articleSave" method="post">
     <div class="left-column">
         <label for="title">Title</label>
         <input type="text" id="title" name="title">
@@ -133,7 +133,7 @@
         <textarea id="contentEditor" name="content"></textarea>
     </div>
     <div class="button-container">
-        <a href="http://localhost:8081/addnewsletter" class="button">Back</a>
+        <a href="/addnewsletter" class="button">Back</a>
         <button type="submit" class="button" name="action" value="save">Save</button>
         <button type="submit" class="button" name="action" value="publish">Publish</button>
     </div>

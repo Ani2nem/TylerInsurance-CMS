@@ -228,13 +228,15 @@
     }
     </style>
 
-    <script>
-            function handleSelectChange() {
-                const year = document.getElementById('yearSelect').value;
-                const quarter = document.getElementById('quarterSelect').value;
-                window.location.href = '/newsletterhome?year=' + year + '&quarter=' + quarter;
-            }
-    </script>
+<!--
+<script>
+    function handleSelectChange() {
+        const year = document.getElementById('yearSelect').value;
+        const quarter = document.getElementById('quarterSelect').value;
+        window.location.href = '/newsletterhome?year=' + year + '&quarter=' + quarter;
+    }
+</script>
+-->
 
 </head>
 <body>
