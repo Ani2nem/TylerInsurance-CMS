@@ -83,6 +83,7 @@ public class HelloController {
             System.out.println("Newsletter ID in addNewsletter: " + nwletter.getNewsletterId());
 
             List<Article> articles = articleRepository.getArticlesByNewsletter_NewsletterId(nwletter.getNewsletterId());
+
             model.addAttribute("articles", articles);
             model.addAttribute("newsletter_id", nwletter.getNewsletterId());
 
@@ -147,7 +148,6 @@ public class HelloController {
                                 @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
                                 @RequestParam("content") String content,
                                 @RequestParam("newsletterId") Long nwletterId,
-                                @RequestParam("status") String status,
                               Model model){
         System.out.println("Called article Save.");
         Article article=new Article();
@@ -162,16 +162,16 @@ public class HelloController {
         //Fetch newsletter by id
         Newsletter nl=newsletterRepository.findByNewsletterId(nwletterId);
         article.setNewsletter(nl);
-        article.setStatus(status);
+        article.setStatus("draft");
 
 
         articleRepository.save(article);
         //Newsletter nwletter = newsletterRepository.findByYearAndQuarter(year,quarter);
         List<Article> articles=articleRepository.getArticlesByNewsletter_NewsletterId(nl.getNewsletterId());
         model.addAttribute("articles",articles);
-        //Make the entire thing single page
-        return "newsletterhome";
 
+        //Make the entire thing single page
+        return "redirect:/newsletterhome?year=" + nl.getYear() + "&quarter=" + nl.getQuarter();
     }
 
 
