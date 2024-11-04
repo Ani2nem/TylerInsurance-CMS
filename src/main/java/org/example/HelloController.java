@@ -102,9 +102,9 @@ public class HelloController {
     }
 
 
-    @GetMapping("/addarticle1")
+    @GetMapping("/addarticle")
     public String addarticle1(Model model) {
-        return "addarticle1";
+        return "addarticle";
     }
 
     @GetMapping("/articleSave")
