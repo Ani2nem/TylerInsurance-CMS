@@ -258,8 +258,16 @@
 <div class="content">
     <div class="title-container">
         <h1>Quarterly Newsletter</h1>
-        <a href="/addarticle" class="add-article-button">ADD ARTICLE</a>
-    </div>
+        <c:choose>
+             <c:when test="${not empty newsletter_id}">
+                 <a href="/addarticle?newsletterId=${newsletter_id}" class="add-article-button">ADD ARTICLE</a>
+             </c:when>
+             <c:otherwise>
+                 <div style="color: red;">Error: Newsletter ID not available</div>
+             </c:otherwise>
+         </c:choose>
+     </div>
+
         <% /** <div class="filters">
 
             <div class="select-group">

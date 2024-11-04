@@ -85,7 +85,8 @@ public class Newsletter {
         this.updatedAt = updatedAt;
     }
 
-    @OneToMany(mappedBy = "", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // Fix the OneToMany relationship by specifying the mappedBy
+    @OneToMany(mappedBy = "newsletter", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Article> articles;
 
     // Getters and Setters
