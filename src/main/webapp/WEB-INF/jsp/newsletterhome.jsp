@@ -50,18 +50,18 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;  /* Reduced from 30px */
-            padding: 10px;
+            margin-bottom: 5px;
+            padding: 15px;
         }
 
 
         .filters {
-            margin-bottom: 20px;  /* Reduced from 40px */
-            padding: 10px 0px;    /* Reduced from 20px */
+            margin-bottom: 20px;
+            padding: 10px 0px;
             margin-left: 15px;
             display: flex;
             align-items: center;
-            gap: 15px;           /* Reduced from 20px */
+            gap: 15px;
         }
 
         select {
@@ -215,7 +215,7 @@
         }
 
     .add-article-button {
-       background-color: #0F919E;
+       background-color: #1B7EC3;
        color: white;
        border: none;
        padding: 10px 25px;
@@ -225,6 +225,43 @@
        text-decoration: none;
        font-size: 14px;
        margin-right: 10px;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      margin-top: 20px;
+      border-top: 1px solid #ddd;
+    }
+
+    .right-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .back-button {
+      background-color: #1B7EC3;
+      color: white;
+    }
+
+    .save-button {
+      background-color: #1B7EC3;
+      color: white;
+    }
+
+    .publish-button {
+      background-color: #1B7EC3;
+      color: white;
     }
     </style>
 
@@ -256,11 +293,12 @@
 
 
 <div class="content">
+    <h1 class="title-container">Quarterly Newsletter</h1>
     <div class="title-container">
-        <h1>Quarterly Newsletter</h1>
+        <h2>${year} Quarter ${quarter}</h2>
         <c:choose>
              <c:when test="${not empty newsletter_id}">
-                 <a href="/addarticle?newsletterId=${newsletter_id}" class="add-article-button">ADD ARTICLE</a>
+                 <a href="/addarticle?newsletterId=${newsletter_id}" class="add-article-button">ADD NEW ARTICLE</a>
              </c:when>
              <c:otherwise>
                  <div style="color: red;">Error: Newsletter ID not available</div>
@@ -310,6 +348,17 @@
                 </c:otherwise>
             </c:choose>
         </div>
+
+
+        <div class="button-container">
+          <a href="/home"><button class="back-button">Back</button></a>
+          <div class="right-buttons">
+            <button class="save-button" >Save</button>
+            <button class="publish-button">Publish</button>
+          </div>
+
+        </div>
+
     </div>
 </body>
 </html>
