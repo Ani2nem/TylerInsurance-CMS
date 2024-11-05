@@ -21,7 +21,7 @@ public class Article {
     @Lob
     private String content;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "newsletterId", referencedColumnName = "newsletterId", nullable = false)
     private Newsletter newsletter;
 
