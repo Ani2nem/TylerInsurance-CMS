@@ -69,12 +69,33 @@
         #subtitle {
             height: 100px;
         }
-        .button-container {
+        .button-row {
             width: 100%;
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
+            align-items: center;
             margin-top: 20px;
         }
+
+        .back-button {
+            padding: 10px 20px;
+            background-color: #1B7EC3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: #0F919E;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+        }
+
         .button {
             padding: 10px 20px;
             margin-left: 10px;
@@ -84,6 +105,7 @@
             border-radius: 4px;
             cursor: pointer;
         }
+
         .button:hover {
             background-color: #0F919E;
         }
@@ -136,10 +158,13 @@
         <textarea id="contentEditor" name="content"></textarea>
     </div>
 
-    <div class="button-container">
-        <a href="/addnewsletter" class="button">Back</a>
-        <button type="submit" class="button" name="action" value="save">Save</button>
-        <button type="submit" class="button" name="action" value="publish">Publish</button>
+
+    <div class="button-row">
+        <a href="/addnewsletter" class="back-button">Back</a>
+        <div class="button-container">
+            <button type="submit" class="button" name="action" value="save">Save</button>
+            <button type="submit" class="button" name="action" value="publish">Publish</button>
+        </div>
     </div>
 </form>
 
