@@ -146,7 +146,7 @@ public class HelloController {
                                 @RequestParam("metadescription") String metadescription,
                                 @RequestParam("summary") String summary,
                                 @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
-                                @RequestParam("Content") String content,
+                                @RequestParam("content") String content,
                                 @RequestParam("newsletterId") Long nwletterId,
                                 @RequestParam("status") String status,
                               Model model){

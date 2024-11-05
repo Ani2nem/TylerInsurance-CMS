@@ -106,7 +106,7 @@
         <a href="#" class="my-account">My Account</a>
     </nav>
 </div>
-<form class="input-form" action="/articleSave" method="post">
+<form class="input-form" action="/articleSave" method="get">
     <div class="left-column">
         <label for="title">Title</label>
         <input type="text" id="title" name="title">
