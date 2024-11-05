@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Controller
@@ -51,60 +52,95 @@ public class HelloController {
     }
 
     @GetMapping("/addnewsletter")
+    @Transactional
     public String addNewsletter(
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) Integer quarter,
-            Model model) {
+            Model model//,
+            /*RedirectAttributes redirectAttributes*/) {
 
-        // Set default values if not provided
-        LocalDate now = LocalDate.now();
-        LocalDateTime timeNow = LocalDateTime.now();
-        Integer currentYear = now.getYear();
-        Integer currentQuarter = ((now.getMonthValue() - 1) / 3) + 1;
+        try {
+            // Set default values if not provided
+            LocalDate now = LocalDate.now();
+            Integer currentYear = now.getYear();
+            Integer currentQuarter = ((now.getMonthValue() - 1) / 3) + 1;
 
-        // Use provided values or defaults
-        Integer selectedYear = (year != null) ? year : currentYear;
-        Integer selectedQuarter = (quarter != null) ? quarter : currentQuarter;
-        System.out.println(now);
+            // Use provided values or defaults
+            Integer selectedYear = (year != null) ? year : currentYear;
+            Integer selectedQuarter = (quarter != null) ? quarter : currentQuarter;
 
-        //If newsletter with this title or quarter/year doesn't exist
-        //Then create an object and save to repo
+            Newsletter nwletter = newsletterRepository.findByYearAndQuarter(selectedYear, selectedQuarter);
+
+            if(nwletter == null) {
+                nwletter = new Newsletter();
+                nwletter.setYear(selectedYear);
+                nwletter.setQuarter(selectedQuarter);
+                nwletter.setTitle("" + selectedYear + " Quarter " + selectedQuarter);
+                nwletter.setStatus("draft");
+                nwletter = newsletterRepository.save(nwletter);  // Save and get the persisted entity
+            }
+
+            // Debug print
+            System.out.println("Newsletter ID in addNewsletter: " + nwletter.getNewsletterId());
+
+            List<Article> articles = articleRepository.getArticlesByNewsletter_NewsletterId(nwletter.getNewsletterId());
+
+            model.addAttribute("articles", articles);
+            model.addAttribute("newsletter_id", nwletter.getNewsletterId());
+            model.addAttribute("year",selectedYear);
+            model.addAttribute("quarter",selectedQuarter);
 
 
-        Newsletter nwletter = newsletterRepository.findByYearAndQuarter(selectedYear,selectedQuarter);
-        //Create a new Newsletter object
-
-        if(nwletter==null) {
-            nwletter = new Newsletter();
-            nwletter.setYear(selectedYear);
-            nwletter.setQuarter(selectedQuarter);
-            nwletter.setTitle(""+selectedYear+ " Quarter "+selectedQuarter );
-            nwletter.setStatus("draft");
-            //nwletter.setPublicationDate(now);
-           // nwletter.setUpdatedAt(timeNow);
-            newsletterRepository.save(nwletter);
+            //return "redirect:/newsletterhome";
+            return "/newsletterhome";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/home";
         }
-
-        Newsletter n_letter = newsletterRepository.findByYearAndQuarter(year,quarter);
-        List<Article> articles=articleRepository.getArticlesByNewsletter_NewsletterId(n_letter.getNewsletterId());
-        model.addAttribute("articles",articles);
-        return "newsletterhome";
     }
 
     @GetMapping("/newsletterhome")
+    @Transactional
     public String newsletterhome(@RequestParam(required = false) Integer year,
                                  @RequestParam(required = false) Integer quarter,
-                                 Model model){
-        Newsletter nwletter = newsletterRepository.findByYearAndQuarter(year,quarter);
-        List<Article> articles=articleRepository.getArticlesByNewsletter_NewsletterId(nwletter.getNewsletterId());
-        model.addAttribute("articles",articles);
-        return "newsletterhome";
+                                 Model model) {
+        try {
+            Newsletter nwletter = newsletterRepository.findByYearAndQuarter(year, quarter);
+            if (nwletter != null) {
+                List<Article> articles = articleRepository.getArticlesByNewsletter_NewsletterId(nwletter.getNewsletterId());
+
+                // Debug print
+                System.out.println("Newsletter ID: " + nwletter.getNewsletterId());
+                System.out.println("Number of articles: " + (articles != null ? articles.size() : 0));
+
+                model.addAttribute("articles", articles);
+                model.addAttribute("newsletter_id", nwletter.getNewsletterId());
+            } else {
+                System.out.println("Newsletter not found for year: " + year + " and quarter: " + quarter);
+            }
+            return "newsletterhome";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/home";
+        }
     }
 
 
+
     @GetMapping("/addarticle")
-    public String addarticle1(Model model) {
-        return "addarticle";
+    @Transactional
+    public String addarticle(@RequestParam Long newsletterId, Model model) {
+        try {
+            Newsletter newsletter = newsletterRepository.findByNewsletterId(newsletterId);
+            if (newsletter == null) {
+                return "redirect:/home";
+            }
+            model.addAttribute("newsletter_id", newsletterId);
+            return "addarticle";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/home";
+        }
     }
 
     /*
@@ -140,17 +176,17 @@ public class HelloController {
 
 
     @GetMapping("/articleSave")
+    @Transactional
     public String submitArticle(@RequestParam("title") String title,
                                 @RequestParam("subtitle") String subtitle,
                                 @RequestParam("metatitle") String metatitle,
                                 @RequestParam("metadescription") String metadescription,
                                 @RequestParam("summary") String summary,
                                 @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
-                                @RequestParam("Content") String content,
+                                @RequestParam("content") String content,
                                 @RequestParam("newsletterId") Long nwletterId,
-                                @RequestParam("status") String status,
                               Model model){
-
+        System.out.println("Called article Save.");
         Article article=new Article();
         article.setTitle(title);
         article.setSubtitle(subtitle);
@@ -163,16 +199,16 @@ public class HelloController {
         //Fetch newsletter by id
         Newsletter nl=newsletterRepository.findByNewsletterId(nwletterId);
         article.setNewsletter(nl);
-        article.setStatus(status);
+        article.setStatus("draft");
 
 
         articleRepository.save(article);
         //Newsletter nwletter = newsletterRepository.findByYearAndQuarter(year,quarter);
         List<Article> articles=articleRepository.getArticlesByNewsletter_NewsletterId(nl.getNewsletterId());
         model.addAttribute("articles",articles);
-        //Make the entire thing single page
-        return "newsletterhome";
 
+        //Make the entire thing single page
+        return "redirect:/newsletterhome?year=" + nl.getYear() + "&quarter=" + nl.getQuarter();
     }
 
 
