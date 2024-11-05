@@ -135,6 +135,7 @@
         <label for="contentEditor">Newsletter Content</label>
         <textarea id="contentEditor" name="content"></textarea>
     </div>
+
     <div class="button-container">
         <a href="/addnewsletter" class="button">Back</a>
         <button type="submit" class="button" name="action" value="save">Save</button>
