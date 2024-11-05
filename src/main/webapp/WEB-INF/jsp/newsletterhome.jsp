@@ -142,75 +142,129 @@
         }
 
 
+        /* Reset the grid to a vertical layout with full width */
         .articles-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);  /* Changed to 4 columns */
-            gap: 20px;                              /* Reduced from 30px */
-            margin: 20px auto;                      /* Centered with reduced margin */
-            max-width: 1400px;                      /* Adjusted max-width */
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 20px 0; /* Remove auto margins */
+            width: 94%; /* Full width */
+            max-width: none; /* Remove max-width constraint */
+            padding: 0; /* Remove padding */
         }
 
+        /* Style individual article cards */
         .article-card {
             background-color: white;
             border: 1px solid #e0e0e0;
             border-radius: 8px;
-            padding: 20px;
+            padding: 25px 30px; /* Slightly more horizontal padding */
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            aspect-ratio: 1;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            min-height: 180px;
+            min-height: 160px;
             transition: transform 0.2s, box-shadow 0.2s;
-            margin-right: 10px;
+            position: relative;
+            width: 100%;
+            margin: 0; /* Remove any margins */
         }
 
         .article-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
 
+        /* Article title styling */
         .article-title {
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 24px;
+            font-weight: 600;
             color: #333;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             line-height: 1.3;
-            /* Keep the text wrapping properties */
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            padding-right: 40px; /* Make space for action buttons */
         }
 
-        .article-date {
-            font-size: 14px;                        /* Reduced from 16px */
-            color: #666;
+        /* Article metadata section */
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-top: auto;
-            padding-top: 12px;                      /* Reduced from 15px */
+            padding-top: 20px;
             border-top: 1px solid #eee;
         }
 
-        @media (max-width: 1200px) {
-            .articles-grid {
-                grid-template-columns: repeat(3, 1fr);
+        .article-date {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Status indicator */
+        .article-status {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status-draft {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+
+        .status-published {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        /* Article action buttons */
+        .article-actions {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #1B7EC3;
+            padding: 5px;
+        }
+
+        .action-button:hover {
+            color: #155592;
+        }
+
+        /* Modify the content container to ensure full width */
+        .content {
+            padding: 20px 30px; /* Add consistent padding */
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Optional: Add a max-width to the content if you want to prevent it from getting too wide on very large screens */
+        @media (min-width: 1920px) {
+            .content {
+                max-width: 1800px;
+                margin: 0 auto;
             }
         }
 
-        @media (max-width: 900px) {
-            .articles-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 600px) {
-            .articles-grid {
-                grid-template-columns: 1fr;
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .content {
+                padding: 15px;
             }
 
             .article-card {
-                min-height: 160px;
+                padding: 20px;
+            }
+
+            .article-title {
+                font-size: 20px;
             }
         }
 
@@ -338,9 +392,23 @@
                     <div class="articles-grid">
                         <c:forEach items="${articles}" var="article">
                             <div class="article-card">
+                                <div class="article-actions">
+                                    <button class="action-button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                            <polyline points="15 3 21 3 21 9"></polyline>
+                                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                                        </svg>
+                                    </button>
+                                </div>
                                 <div class="article-title">${article.title}</div>
-                                <div class="article-date">
-                                    <fmt:formatDate value="${article.addedDate}" pattern="MMM dd, yyyy"/>
+                                <div class="article-meta">
+                                    <div class="article-date">
+                                        <fmt:formatDate value="${article.addedDate}" pattern="MMM dd, yyyy"/>
+                                    </div>
+                                    <div class="article-status ${article.status == 'draft' ? 'status-draft' : 'status-published'}">
+                                        ${article.status}
+                                    </div>
                                 </div>
                             </div>
                         </c:forEach>
