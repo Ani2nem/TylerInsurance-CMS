@@ -56,7 +56,8 @@ public class HelloController {
     public String addNewsletter(
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) Integer quarter,
-            Model model) {
+            Model model//,
+            /*RedirectAttributes redirectAttributes*/) {
 
         try {
             // Set default values if not provided
@@ -86,8 +87,12 @@ public class HelloController {
 
             model.addAttribute("articles", articles);
             model.addAttribute("newsletter_id", nwletter.getNewsletterId());
+            model.addAttribute("year",selectedYear);
+            model.addAttribute("quarter",selectedQuarter);
 
-            return "newsletterhome";
+
+            //return "redirect:/newsletterhome";
+            return "/newsletterhome";
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/home";
@@ -124,7 +129,7 @@ public class HelloController {
 
     @GetMapping("/addarticle")
     @Transactional
-    public String addarticle1(@RequestParam Long newsletterId, Model model) {
+    public String addarticle(@RequestParam Long newsletterId, Model model) {
         try {
             Newsletter newsletter = newsletterRepository.findByNewsletterId(newsletterId);
             if (newsletter == null) {
