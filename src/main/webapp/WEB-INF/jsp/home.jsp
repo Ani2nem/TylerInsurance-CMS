@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Insurance Filings - Newsletter</title>
-    <%-- Include JSTL core tag library --%>
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
     <style>
         body {
@@ -97,9 +96,18 @@
             border: 1px solid #ddd;
             padding: 10px;
             margin-top: 5px;
+            transition: background-color 0.2s;
+        }
+        .quarter:hover {
+            background-color: #f5f5f5;
+        }
+        .quarter-link {
+            text-decoration: none;
+            color: inherit;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            width: 100%;
         }
         .quarter-info {
             color: #888;
@@ -113,58 +121,95 @@
             padding: 5px 10px;
             border-radius: 3px;
             cursor: pointer;
+            z-index: 2;
         }
-
-        /* Styles for the pop-up */
-        .popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-        }
-        .popup-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .popup-content h2 {
-            margin-top: 0;
-        }
-        .popup-content select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-        .popup-content .button {
+        .action-button:hover {
             background-color: #0F919E;
             color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-right: 10px;
         }
-        .popup-content .button:last-child {
-            background-color: #ccc;
-        }
-        #popup-toggle {
-            display: none;
-        }
-        #popup-toggle:checked + .popup-overlay {
-            opacity: 1;
-            visibility: visible;
-        }
+
+    /* Popup/Modal Styles */
+    .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #popup-toggle {
+        display: none;
+    }
+
+    #popup-toggle:checked + .popup-overlay {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .popup-content {
+        background-color: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        width: 90%;
+        max-width: 400px;
+        position: relative;
+    }
+
+    .popup-content h2 {
+        margin-top: 0;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .popup-content select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: white;
+        font-size: 16px;
+    }
+
+    .popup-content .button {
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        border: none;
+        margin-right: 10px;
+    }
+
+    .popup-content button[type="submit"] {
+        background-color: #0F919E;
+        color: white;
+    }
+
+    .popup-content label.button {
+        background-color: #e0e0e0;
+        color: #333;
+        display: inline-block;
+    }
+
+    .popup-content form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .popup-content .button-group {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+    }
     </style>
 </head>
 <body>
@@ -192,35 +237,37 @@
         <div class="year-container">
             <input type="checkbox" id="year-${year}" class="year-toggle">
             <label for="year-${year}" class="year-label">
-                    ${year}
+                ${year}
                 <span class="year-icon"></span>
             </label>
             <div class="quarters-container">
                 <c:forEach var="newsletter" items="${newsletters.stream().filter(n -> n.getYear() == year).sorted((a, b) -> b.getPublicationDate().compareTo(a.getPublicationDate())).toList()}">
                     <div class="quarter">
-                        <span>${newsletter.title}</span>
-                        <div>
-                            <span class="quarter-info">
-                                <c:choose>
-                                    <c:when test="${newsletter.status == 'published'}">
-                                        Published on ${newsletter.publicationDate}
-                                    </c:when>
-                                    <c:otherwise>
-                                        Saved on ${newsletter.publicationDate}
-                                    </c:otherwise>
-                                </c:choose>
-                            </span>
-                            <button class="action-button">
-                                <c:choose>
-                                    <c:when test="${newsletter.status == 'published'}">
-                                        Unpublish
-                                    </c:when>
-                                    <c:otherwise>
-                                        Publish
-                                    </c:otherwise>
-                                </c:choose>
-                            </button>
-                        </div>
+                        <a href="/newsletterhome?year=${year}&quarter=${newsletter.quarter}" class="quarter-link">
+                            <span>${newsletter.title}</span>
+                            <div style="display: flex; align-items: center;">
+                                <span class="quarter-info">
+                                    <c:choose>
+                                        <c:when test="${newsletter.status == 'published'}">
+                                            Published on ${newsletter.publicationDate}
+                                        </c:when>
+                                        <c:otherwise>
+                                            Saved on ${newsletter.publicationDate}
+                                        </c:otherwise>
+                                    </c:choose>
+                                </span>
+                                <button class="action-button" onclick="event.stopPropagation();">
+                                    <c:choose>
+                                        <c:when test="${newsletter.status == 'published'}">
+                                            Unpublish
+                                        </c:when>
+                                        <c:otherwise>
+                                            Publish
+                                        </c:otherwise>
+                                    </c:choose>
+                                </button>
+                            </div>
+                        </a>
                     </div>
                 </c:forEach>
             </div>
@@ -247,8 +294,10 @@
                 <option value="3">Quarter 3</option>
                 <option value="4">Quarter 4</option>
             </select>
-            <button type="submit" class="button">Add</button>
-            <label for="popup-toggle" class="button">Cancel</label>
+            <div class="button-group">
+                <button type="submit" class="button">Add</button>
+                <label for="popup-toggle" class="button">Cancel</label>
+            </div>
         </form>
     </div>
 </div>

@@ -295,14 +295,103 @@
       color: white;
     }
 
-    .save-button {
+    .publish-newsletter-button {
       background-color: #1B7EC3;
       color: white;
     }
 
-    .publish-newsletter-button {
-      background-color: #1B7EC3;
-      color: white;
+
+    .edit-title-icon {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px;
+        margin-left: 16px;
+        cursor: pointer;
+        color: #666;
+        transition: color 0.2s ease;
+    }
+
+    .edit-title-icon:hover {
+        color: #1B7EC3;
+    }
+
+    .pencil-icon {
+        width: 16px;
+        height: 16px;
+    }
+
+    /* Modal styles */
+    .popup-toggle {
+        display: none;
+    }
+
+    .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+    }
+
+    .popup-toggle:checked + .popup-overlay {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .popup-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 24px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        width: 90%;
+        max-width: 400px;
+    }
+
+    .title-input {
+        width: 100%;
+        padding: 8px 12px;
+        margin: 16px 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .modal-button {
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        border: none;
+    }
+
+    .save-button {
+        background-color: #1B7EC3;
+        color: white;
+    }
+
+    .cancel-button {
+        background-color: #e0e0e0;
+        color: #333;
+    }
+
+    .modal-button:hover {
+        opacity: 0.9;
     }
     </style>
 
@@ -336,16 +425,24 @@
 <div class="content">
     <h1 class="title-container">Quarterly Newsletter</h1>
     <div class="title-container">
-        <h2>${year} Quarter ${quarter}</h2>
+        <div style="display: flex; align-items: center;">
+            <h2>${newsletter.title}
+                <label for="edit-title-popup" class="edit-title-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="pencil-icon">
+                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                    </svg>
+                </label>
+            </h2>
+        </div>
         <c:choose>
-             <c:when test="${not empty newsletter_id}">
-                 <a href="/addarticle?newsletterId=${newsletter_id}" class="add-article-button">Add New Article</a>
-             </c:when>
-             <c:otherwise>
-                 <div style="color: red;">Error: Newsletter ID not available</div>
-             </c:otherwise>
-         </c:choose>
-     </div>
+            <c:when test="${not empty newsletter_id}">
+                <a href="/addarticle?newsletterId=${newsletter_id}" class="add-article-button">Add New Article</a>
+            </c:when>
+            <c:otherwise>
+                <div style="color: red;">Error: Newsletter ID not available</div>
+            </c:otherwise>
+        </c:choose>
+    </div>
 
         <% /** <div class="filters">
 
@@ -406,12 +503,27 @@
         <div class="button-container">
           <a href="/home"><button class="back-button">Back</button></a>
           <div class="right-buttons">
-            <button class="save-button" >Save</button>
             <button class="publish-newsletter-button">Publish</button>
           </div>
 
         </div>
 
     </div>
+
+    <% /** modal for editing the newsletter title **/ %>
+    <input type="checkbox" id="edit-title-popup" class="popup-toggle">
+        <div class="popup-overlay">
+            <div class="popup-content">
+                <h2>Edit Newsletter Title</h2>
+                <form action="/updateNewsletterTitle" method="post">
+                    <input type="hidden" name="newsletterId" value="${newsletter_id}">
+                    <input type="text" name="title" value="${newsletter.title}" class="title-input" required>
+                    <div class="button-group">
+                        <button type="submit" class="modal-button save-button">Save</button>
+                        <label for="edit-title-popup" class="modal-button cancel-button">Cancel</label>
+                    </div>
+                </form>
+            </div>
+        </div>
 </body>
 </html>
