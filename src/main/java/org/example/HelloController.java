@@ -160,8 +160,11 @@ public class HelloController {
     @GetMapping("/editArticle")
     public String editArticle(@RequestParam("id") Long id, Model model) {
         Article content = articleRepository.findById(id).orElse(null);
+
         System.out.println(content.getTitle());
-        if (content != null) {
+        if (content!= null) {
+
+            //Newsletter nwletter= newsletterRepository.findByYearAndQuarter();
             model.addAttribute("title", content.getTitle());
             model.addAttribute("subTitle", content.getSubtitle());
             model.addAttribute("date", content.getAddedDate());
@@ -169,8 +172,10 @@ public class HelloController {
             model.addAttribute("metaDescription", content.getMetaDescription());
             model.addAttribute("summary", content.getSummary());
             model.addAttribute("newsletterContent", content.getContent());
+            model.addAttribute("newsletter_id",content.getNewsletter().getNewsletterId());
+            model.addAttribute("articleId",id);
         }
-        return "addarticle";
+        return "editarticle";
     }
 
 
@@ -185,17 +190,38 @@ public class HelloController {
                                 @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
                                 @RequestParam("content") String content,
                                 @RequestParam("newsletterId") Long nwletterId,
+                                @RequestParam(value = "articleId", required = false) Long articleId,
                               Model model){
         System.out.println("Called article Save.");
-        Article article=new Article();
-        article.setTitle(title);
-        article.setSubtitle(subtitle);
-        article.setSummary(summary);
-        article.setMetaTitle(metatitle);
-        article.setMetaDescription(metadescription);
-        article.setAddedDate(date);
-        article.setContent(content);
 
+        //Check if article exists if id is given as input if not then make new article
+        Article article;
+        if(articleId!=null) {
+            article = articleRepository.findById(articleId).orElse(null);
+
+            if(article!=null){
+                article.setTitle(title);
+                article.setSubtitle(subtitle);
+                article.setSummary(summary);
+                article.setMetaTitle(metatitle);
+                article.setMetaDescription(metadescription);
+                article.setAddedDate(date);
+                article.setContent(content);
+                System.out.println("I am in edit");
+            }else{
+                System.out.println("Something is wrong");
+            }
+        }
+        else{
+            article = new Article();
+            article.setTitle(title);
+            article.setSubtitle(subtitle);
+            article.setSummary(summary);
+            article.setMetaTitle(metatitle);
+            article.setMetaDescription(metadescription);
+            article.setAddedDate(date);
+            article.setContent(content);
+        }
         //Fetch newsletter by id
         Newsletter nl=newsletterRepository.findByNewsletterId(nwletterId);
         article.setNewsletter(nl);
@@ -206,9 +232,12 @@ public class HelloController {
         //Newsletter nwletter = newsletterRepository.findByYearAndQuarter(year,quarter);
         List<Article> articles=articleRepository.getArticlesByNewsletter_NewsletterId(nl.getNewsletterId());
         model.addAttribute("articles",articles);
+        model.addAttribute("year",nl.getYear());
+        model.addAttribute("quarter",nl.getQuarter());
+        model.addAttribute("newsletter_id",nl.getNewsletterId());
 
         //Make the entire thing single page
-        return "redirect:/newsletterhome?year=" + nl.getYear() + "&quarter=" + nl.getQuarter();
+        return "newsletterhome";
     }
 
 

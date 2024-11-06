@@ -11,5 +11,5 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     @Transactional(readOnly = true)
     List<Article> getArticlesByNewsletter_NewsletterId(Long newsletterId);
 
-    Article findByTitle(String title);
+    //Article findByTitle(String title);
 }

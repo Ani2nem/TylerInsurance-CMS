@@ -132,6 +132,8 @@
 <form class="input-form" action="/articleSave" method="get">
 
     <input type="hidden" name="newsletterId" value="${newsletter_id}">
+    <input type="hidden" name="articleId" value="${articleId}">
+
     <div class="left-column">
         <label for="title">Title</label>
         <input type="text" id="title" name="title" value="${title}">
