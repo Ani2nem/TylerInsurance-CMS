@@ -225,6 +225,10 @@
             color: #6c757d;
         }
 
+        .external-link-icon:hover{
+            cursor: pointer;
+        }
+
         .publish-button {
             background-color: #45818e;  /* Teal color matching the image */
             color: white;
