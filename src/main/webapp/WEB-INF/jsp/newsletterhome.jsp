@@ -142,76 +142,105 @@
         }
 
 
+        /* Card container */
         .articles-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);  /* Changed to 4 columns */
-            gap: 20px;                              /* Reduced from 30px */
-            margin: 20px auto;                      /* Centered with reduced margin */
-            max-width: 1400px;                      /* Adjusted max-width */
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin: 20px 0;
+            width: 94%;
         }
 
+        /* Individual card styling */
         .article-card {
             background-color: white;
             border: 1px solid #e0e0e0;
             border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            aspect-ratio: 1;
+            padding: 24px 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            min-height: 180px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin-right: 10px;
+            gap: 12px;
+            position: relative;
+            width: 100%;
         }
 
-        .article-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }
-
+        /* Main title */
         .article-title {
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 24px;
+            font-weight: 600;
             color: #333;
-            margin-bottom: 12px;
-            line-height: 1.3;
-            /* Keep the text wrapping properties */
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            margin: 0;
+            padding-right: 120px; /* Make space for the status badge */
         }
 
-        .article-date {
-            font-size: 14px;                        /* Reduced from 16px */
+        /* Subtitle styling */
+        .article-subtitle {
+            font-style: italic;
             color: #666;
-            margin-top: auto;
-            padding-top: 12px;                      /* Reduced from 15px */
-            border-top: 1px solid #eee;
+            font-size: 16px;
+            margin: 8px 0 16px 0;
         }
 
-        @media (max-width: 1200px) {
-            .articles-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
+        /* Article content */
+        .article-content {
+            color: #444;
+            font-size: 16px;
+            line-height: 1.5;
+            margin: 8px 0;
         }
 
-        @media (max-width: 900px) {
-            .articles-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        /* Status badge */
+        .status-badge {
+            position: absolute;
+            top: 24px;
+            right: 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
         }
 
-        @media (max-width: 600px) {
-            .articles-grid {
-                grid-template-columns: 1fr;
-            }
+        .status-draft {
+            color: #6c757d;
+        }
 
-            .article-card {
-                min-height: 160px;
-            }
+        .status-published {
+            color: #0d6efd;
+        }
+
+        /* Date styling */
+        .article-date {
+            font-size: 14px;
+            color: #666;
+            margin-top: 16px;
+        }
+
+        /* External link icon */
+        .external-link-icon {
+            width: 24px;
+            height: 24px;
+            color: #6c757d;
+        }
+
+        .publish-button {
+            background-color: #45818e;  /* Teal color matching the image */
+            color: white;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            align-self: flex-end;
+            margin-top: 16px;
+            margin-left: auto;  /* Push to the right */
+            display: inline-block;
+        }
+
+        .publish-button:hover {
+            background-color: #3a6d77;
         }
 
     .add-article-button {
@@ -259,7 +288,7 @@
       color: white;
     }
 
-    .publish-button {
+    .publish-newsletter-button {
       background-color: #1B7EC3;
       color: white;
     }
@@ -298,7 +327,7 @@
         <h2>${year} Quarter ${quarter}</h2>
         <c:choose>
              <c:when test="${not empty newsletter_id}">
-                 <a href="/addarticle?newsletterId=${newsletter_id}" class="add-article-button">ADD NEW ARTICLE</a>
+                 <a href="/addarticle?newsletterId=${newsletter_id}" class="add-article-button">Add New Article</a>
              </c:when>
              <c:otherwise>
                  <div style="color: red;">Error: Newsletter ID not available</div>
@@ -335,17 +364,28 @@
                     </div>
                 </c:when>
                 <c:otherwise>
-                    <div class="articles-grid">
-                        <c:forEach items="${articles}" var="article">
-                            <div class="article-card">
-                                <div class="article-title">${article.title}</div>
-                                <div class="article-date">
-                                    <fmt:formatDate value="${article.addedDate}" pattern="MMM dd, yyyy"/>
-                                </div>
-                            </div>
-                        </c:forEach>
-                    </div>
-                </c:otherwise>
+               <div class="articles-grid">
+                   <c:forEach items="${articles}" var="article">
+                       <div class="article-card">
+                           <div class="status-badge ${article.status == 'draft' ? 'status-draft' : 'status-published'}">
+                               <svg class="external-link-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                   <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                   <polyline points="15 3 21 3 21 9"></polyline>
+                                   <line x1="10" y1="14" x2="21" y2="3"></line>
+                               </svg>
+                               ${article.status == 'draft' ? 'Saved as Draft' : 'Published'}
+                           </div>
+
+                           <h2 class="article-title">${article.title}</h2>
+                           <div class="article-subtitle">${article.subtitle}</div>
+                           <div class="article-content">${article.summary}</div>
+                       </div>
+                   </c:forEach>
+                    <c:if test="${article.status == 'draft'}">
+                       <button class="publish-button">Publish</button>
+                   </c:if>
+               </div>
+            </c:otherwise>
             </c:choose>
         </div>
 
@@ -354,7 +394,7 @@
           <a href="/home"><button class="back-button">Back</button></a>
           <div class="right-buttons">
             <button class="save-button" >Save</button>
-            <button class="publish-button">Publish</button>
+            <button class="publish-newsletter-button">Publish</button>
           </div>
 
         </div>
