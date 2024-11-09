@@ -40,7 +40,7 @@ public class HelloController {
     public String getNewsletters(Model model) {
         List<Newsletter> newsletters = newsletterRepository.findAll();
         List<HomeElements> newsletterData =  newsletters.stream()
-                .map(newsletter -> new HomeElements(newsletter.getTitle(), newsletter.getYear(), newsletter.getStatus(), newsletter.getPublicationDate()))
+                .map(newsletter -> new HomeElements(newsletter.getTitle(), newsletter.getYear(), newsletter.getQuarter(), newsletter.getStatus(), newsletter.getPublicationDate()))
                 .collect(Collectors.toList());
 
         newsletterData.forEach(entry -> {
@@ -86,6 +86,7 @@ public class HelloController {
             List<Article> articles = articleRepository.getArticlesByNewsletter_NewsletterId(nwletter.getNewsletterId());
 
             model.addAttribute("articles", articles);
+            model.addAttribute("newsletter", nwletter); // Add full newsletter object so frontend can get title
             model.addAttribute("newsletter_id", nwletter.getNewsletterId());
             model.addAttribute("year",selectedYear);
             model.addAttribute("quarter",selectedQuarter);
@@ -114,7 +115,10 @@ public class HelloController {
                 System.out.println("Number of articles: " + (articles != null ? articles.size() : 0));
 
                 model.addAttribute("articles", articles);
+                model.addAttribute("newsletter", nwletter); // Add full newsletter object so frontend can get title
                 model.addAttribute("newsletter_id", nwletter.getNewsletterId());
+                model.addAttribute("year", year);
+                model.addAttribute("quarter", quarter);
             } else {
                 System.out.println("Newsletter not found for year: " + year + " and quarter: " + quarter);
             }
@@ -123,6 +127,26 @@ public class HelloController {
             e.printStackTrace();
             return "redirect:/home";
         }
+    }
+
+    // new addition for updating the newsletter title - Anirudh
+    @PostMapping("/updateNewsletterTitle")
+    @Transactional
+    public String updateNewsletterTitle(@RequestParam Long newsletterId,
+                                        @RequestParam String title,
+                                        RedirectAttributes redirectAttributes) {
+        // 1. Find the existing newsletter by ID
+        Newsletter newsletter = newsletterRepository.findByNewsletterId(newsletterId);
+
+        if (newsletter != null) {
+            // 2. Update only the title field of the same newsletter
+            newsletter.setTitle(title);
+            // 3. Save the updated newsletter back to database
+            newsletterRepository.save(newsletter);
+        }
+
+        // 4. Redirect back to the newsletter page
+        return "redirect:/newsletterhome?year=" + newsletter.getYear() + "&quarter=" + newsletter.getQuarter();
     }
 
 
