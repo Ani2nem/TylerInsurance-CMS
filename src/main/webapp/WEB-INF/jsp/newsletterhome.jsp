@@ -517,7 +517,19 @@
                 <h2>Edit Newsletter Title</h2>
                 <form action="/updateNewsletterTitle" method="post">
                     <input type="hidden" name="newsletterId" value="${newsletter_id}">
-                    <input type="text" name="title" value="${newsletter.title}" class="title-input" required>
+                    <select name="year" required value="${newsletter.year}">
+                                    <option value="">Select Year</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2022">2022</option>
+                    </select>
+                    <select name="quarter" required value="${newsletter.quarter}">
+                        <option value="">Select Quarter</option>
+                        <option value="1">Quarter 1</option>
+                        <option value="2">Quarter 2</option>
+                        <option value="3">Quarter 3</option>
+                        <option value="4">Quarter 4</option>
+                    </select>
                     <div class="button-group">
                         <button type="submit" class="modal-button save-button">Save</button>
                         <label for="edit-title-popup" class="modal-button cancel-button">Cancel</label>

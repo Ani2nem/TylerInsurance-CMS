@@ -133,20 +133,24 @@ public class HelloController {
     @PostMapping("/updateNewsletterTitle")
     @Transactional
     public String updateNewsletterTitle(@RequestParam Long newsletterId,
-                                        @RequestParam String title,
+                                        @RequestParam Integer year,
+                                        @RequestParam Integer quarter,
                                         RedirectAttributes redirectAttributes) {
         // 1. Find the existing newsletter by ID
-        Newsletter newsletter = newsletterRepository.findByNewsletterId(newsletterId);
+        Newsletter nwletter = newsletterRepository.findByNewsletterId(newsletterId);
 
-        if (newsletter != null) {
+        if (nwletter != null) {
             // 2. Update only the title field of the same newsletter
-            newsletter.setTitle(title);
+
+            nwletter.setYear(year);
+            nwletter.setQuarter(quarter);
+            nwletter.setTitle("" + year + " Quarter " + quarter);
             // 3. Save the updated newsletter back to database
-            newsletterRepository.save(newsletter);
+            newsletterRepository.save(nwletter);
         }
 
         // 4. Redirect back to the newsletter page
-        return "redirect:/newsletterhome?year=" + newsletter.getYear() + "&quarter=" + newsletter.getQuarter();
+        return "redirect:/newsletterhome?year=" + nwletter.getYear() + "&quarter=" + nwletter.getQuarter();
     }
 
 
