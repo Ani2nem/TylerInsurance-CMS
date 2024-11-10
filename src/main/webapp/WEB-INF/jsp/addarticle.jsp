@@ -160,7 +160,7 @@
 
 
     <div class="button-row">
-        <a href="/addnewsletter" class="back-button">Back</a>
+        <a href="/newsletterhome?year=${year}&quarter=${quarter}" class="back-button">Back</a>
         <div class="button-container">
             <button type="submit" class="button" name="action" value="save">Save</button>
             <button type="submit" class="button" name="action" value="publish">Publish</button>
