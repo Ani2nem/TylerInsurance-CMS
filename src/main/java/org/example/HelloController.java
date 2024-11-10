@@ -218,6 +218,8 @@ public String publishNewsletter(@RequestParam Integer year,
                 return "redirect:/home";
             }
             model.addAttribute("newsletter_id", newsletterId);
+            model.addAttribute("year", newsletter.getYear());        // Added this for better routing
+            model.addAttribute("quarter", newsletter.getQuarter());  // Added this
             return "addarticle";
         } catch (Exception e) {
             e.printStackTrace();
