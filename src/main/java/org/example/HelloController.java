@@ -100,10 +100,51 @@ public class HelloController {
         }
     }
 
+    @GetMapping("/publishNewsletter")
+    public String publishNewsletter(@RequestParam Integer year,
+                                    @RequestParam Integer quarter,
+                                    Model model){
+
+        Newsletter nwletter = newsletterRepository.findByYearAndQuarter(year, quarter);
+        if (nwletter != null) {
+            List<Article> articles = articleRepository.getArticlesByNewsletter_NewsletterId(nwletter.getNewsletterId());
+
+
+            //Loop through all articles and check if status is draft
+            for (Article a:articles){
+
+                //if draft then set status to published
+                if(!a.getStatus().equals("published")){
+                    a.setStatus("published");
+                    System.out.println("I am trying to change status");
+                    articleRepository.save(a);
+                }
+
+            }
+            nwletter.setStatus("published");
+            newsletterRepository.save(nwletter);
+
+
+        }
+
+        List<Newsletter> newsletters = newsletterRepository.findAll();
+        List<HomeElements> newsletterData =  newsletters.stream()
+                .map(newsletter -> new HomeElements(newsletter.getTitle(), newsletter.getYear(), newsletter.getQuarter(), newsletter.getStatus(), newsletter.getPublicationDate()))
+                .collect(Collectors.toList());
+
+        newsletterData.forEach(entry -> {
+            System.out.println(entry.getTitle() + " " + entry.getYear() + " " + entry.getStatus() + " " + entry.getPublicationDate());
+        });
+
+        model.addAttribute("newsletters", newsletterData);
+
+        return "home";
+    }
+
     @GetMapping("/newsletterhome")
     @Transactional
-    public String newsletterhome(@RequestParam(required = false) Integer year,
-                                 @RequestParam(required = false) Integer quarter,
+    public String newsletterhome(@RequestParam Integer year,
+                                 @RequestParam Integer quarter,
                                  Model model) {
         try {
             Newsletter nwletter = newsletterRepository.findByYearAndQuarter(year, quarter);
@@ -250,6 +291,7 @@ public class HelloController {
             article.setAddedDate(date);
             article.setContent(content);
         }
+
         //Fetch newsletter by id
         Newsletter nl=newsletterRepository.findByNewsletterId(nwletterId);
         article.setNewsletter(nl);
@@ -268,6 +310,33 @@ public class HelloController {
         return "newsletterhome";
     }
 
+    @GetMapping("/publishArticle")
+    public String publishArticle(@RequestParam("id") Long id,
+                                 @RequestParam("newsletterId") Long nwletterId,
+                                 Model model){
+
+        //Fetch Article
+        Article article=articleRepository.findById(id).orElse(null);
+
+        if(article!=null){
+
+            //Change status to publish
+            article.setStatus("published");
+            articleRepository.save(article);
+
+        }
+
+        //Fetch newsletter by id
+        Newsletter nl=newsletterRepository.findByNewsletterId(nwletterId);
+        List<Article> articles=articleRepository.getArticlesByNewsletter_NewsletterId(nl.getNewsletterId());
+        model.addAttribute("articles",articles);
+        model.addAttribute("year",nl.getYear());
+        model.addAttribute("quarter",nl.getQuarter());
+        model.addAttribute("newsletter_id",nl.getNewsletterId());
+
+        return "newsletterhome";
+
+    }
 
     // Handle form submission and save content
     @PostMapping("/display")
