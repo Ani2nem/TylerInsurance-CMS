@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 21.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Checkbox" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 22 132" style="enable-background:new 0 0 22 132;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#F5F5F5;}
+	.st1{fill:#DDDDDD;}
+	.st2{fill:#2A84C8;}
+	.st3{fill:#E9E9E9;}
+	.st4{fill:#B3B3B3;}
+	.st5{fill:#FFFFFF;}
+	.st6{fill:#F5B861;}
+</style>
+<title>inputs</title>
+<rect x="0.5" y="0.5" class="st0" width="21" height="21"/>
+<path class="st1" d="M21,1v20H1V1H21 M22,0H0v22h22V0z"/>
+<rect x="0.5" y="22.5" class="st0" width="21" height="21"/>
+<path class="st1" d="M21,23v20H1V23H21 M22,22H0v22h22V22z"/>
+<polygon class="st2" points="9.6,33.9 16.2,27.3 18.6,29.8 9.7,38.7 4,33 6.4,30.6 "/>
+<rect x="0.5" y="88.5" class="st3" width="21" height="21"/>
+<path class="st1" d="M21,89v20H1V89H21 M22,88H0v22h22V88z"/>
+<rect x="0.5" y="110.5" class="st3" width="21" height="21"/>
+<path class="st1" d="M21,111v20H1v-20H21 M22,110H0v22h22V110z"/>
+<polygon class="st4" points="9.6,121.9 16.2,115.3 18.6,117.8 9.7,126.7 4,121 6.4,118.6 "/>
+<rect x="0.5" y="44.5" class="st5" width="21" height="21"/>
+<path class="st6" d="M21,45v20H1V45H21 M22,44H0v22h22V44z"/>
+<rect x="0.5" y="66.5" class="st5" width="21" height="21"/>
+<path class="st6" d="M21,67v20H1V67H21 M22,66H0v22h22V66z"/>
+<polygon class="st2" points="9.6,77.9 16.2,71.3 18.6,73.8 9.7,82.7 4,77 6.4,74.6 "/>
+</svg>

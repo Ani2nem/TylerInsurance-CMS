@@ -101,45 +101,43 @@ public class HelloController {
     }
 
     @GetMapping("/publishNewsletter")
-    public String publishNewsletter(@RequestParam Integer year,
-                                    @RequestParam Integer quarter,
-                                    Model model){
+public String publishNewsletter(@RequestParam Integer year,
+                                @RequestParam Integer quarter,
+                                Model model){
 
-        Newsletter nwletter = newsletterRepository.findByYearAndQuarter(year, quarter);
-        if (nwletter != null) {
-            List<Article> articles = articleRepository.getArticlesByNewsletter_NewsletterId(nwletter.getNewsletterId());
+    Newsletter nwletter = newsletterRepository.findByYearAndQuarter(year, quarter);
+    if (nwletter != null) {
+        List<Article> articles = articleRepository.getArticlesByNewsletter_NewsletterId(nwletter.getNewsletterId());
 
-
-            //Loop through all articles and check if status is draft
-            for (Article a:articles){
-
-                //if draft then set status to published
-                if(!a.getStatus().equals("published")){
-                    a.setStatus("published");
-                    System.out.println("I am trying to change status");
-                    articleRepository.save(a);
-                }
-
+        // Publish all draft articles
+        for (Article a : articles){
+            if(!a.getStatus().equals("published")){
+                a.setStatus("published");
+                articleRepository.save(a);
             }
-            nwletter.setStatus("published");
-            newsletterRepository.save(nwletter);
-
-
         }
+        
+        nwletter.setStatus("published");
+        newsletterRepository.save(nwletter);
 
+        // Pass the necessary data for newsletterview.jsp
+        model.addAttribute("newsletter", nwletter);
+        model.addAttribute("articles", articles);
+        
+        // If you also need the newsletter list data
         List<Newsletter> newsletters = newsletterRepository.findAll();
-        List<HomeElements> newsletterData =  newsletters.stream()
-                .map(newsletter -> new HomeElements(newsletter.getTitle(), newsletter.getYear(), newsletter.getQuarter(), newsletter.getStatus(), newsletter.getPublicationDate()))
-                .collect(Collectors.toList());
-
-        newsletterData.forEach(entry -> {
-            System.out.println(entry.getTitle() + " " + entry.getYear() + " " + entry.getStatus() + " " + entry.getPublicationDate());
-        });
-
-        model.addAttribute("newsletters", newsletterData);
-
-        return "home";
+        List<HomeElements> newsletterData = newsletters.stream()
+            .map(newsletter -> new HomeElements(newsletter.getTitle(), 
+                newsletter.getYear(), 
+                newsletter.getQuarter(), 
+                newsletter.getStatus(), 
+                newsletter.getPublicationDate()))
+            .collect(Collectors.toList());
+        model.addAttribute("newsletters", newsletterData);  // For any other view that needs it
     }
+
+    return "newsletterview";
+}
 
     @GetMapping("/newsletterhome")
     @Transactional
@@ -192,6 +190,21 @@ public class HelloController {
 
         // 4. Redirect back to the newsletter page
         return "redirect:/newsletterhome?year=" + nwletter.getYear() + "&quarter=" + nwletter.getQuarter();
+    }
+
+    @GetMapping("/viewNewsletter")
+    public String viewNewsletter(@RequestParam Integer year,
+                               @RequestParam Integer quarter,
+                               Model model) {
+        Newsletter nwletter = newsletterRepository.findByYearAndQuarter(year, quarter);
+        if (nwletter != null) {
+            List<Article> articles = articleRepository.getArticlesByNewsletter_NewsletterId(nwletter.getNewsletterId());
+            
+            model.addAttribute("newsletter", nwletter);
+            model.addAttribute("articles", articles);
+            return "newsletterview";
+        }
+        return "redirect:/home";
     }
 
 
