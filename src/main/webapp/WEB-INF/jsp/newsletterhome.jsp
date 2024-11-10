@@ -503,7 +503,9 @@
         <div class="button-container">
           <a href="/home"><button class="back-button">Back</button></a>
           <div class="right-buttons">
-            <button class="publish-newsletter-button">Publish</button>
+            <a href="/publishNewsletter?year=${year}&quarter=${quarter}">
+                <button class="publish-newsletter-button">Publish</button>
+            </a>
           </div>
 
         </div>
