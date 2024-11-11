@@ -393,6 +393,10 @@
     .modal-button:hover {
         opacity: 0.9;
     }
+
+    .quarter-link {
+                text-decoration: none;
+    }
     </style>
 
 
@@ -432,14 +436,16 @@
             <c:otherwise>
                 <div class="articles-grid">
                     <c:forEach items="${articles}" var="article">
-                        <div class="article-card">
-                            <h2 class="article-title">${article.title}</h2>
-                            <div class="article-subtitle">${article.subtitle}</div>
-                            <div class="article-summary">${article.summary}</div>
-                            <div class="article-date">
-                                <fmt:formatDate value="${article.addedDate}" pattern="MMMM dd, yyyy"/>
+                        <a href="/articleview?id=${article.articleId}" class="quarter-link">
+                            <div class="article-card">
+                                <h2 class="article-title">${article.title}</h2>
+                                <div class="article-subtitle">${article.subtitle}</div>
+                                <div class="article-summary">${article.summary}</div>
+                                <div class="article-date">
+                                    <fmt:formatDate value="${article.addedDate}" pattern="MMMM dd, yyyy"/>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </c:forEach>
                 </div>
             </c:otherwise>

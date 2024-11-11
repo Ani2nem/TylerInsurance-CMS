@@ -198,8 +198,9 @@ public String publishNewsletter(@RequestParam Integer year,
                                Model model) {
         Newsletter nwletter = newsletterRepository.findByYearAndQuarter(year, quarter);
         if (nwletter != null) {
-            List<Article> articles = articleRepository.getArticlesByNewsletter_NewsletterId(nwletter.getNewsletterId());
-            
+            //List<Article> articles = articleRepository.getArticlesByNewsletter_NewsletterId(nwletter.getNewsletterId());
+            List<Article> articles = articleRepository.getArticlesByNewsletter_NewsletterIdAndStatus(nwletter.getNewsletterId(), "published");
+
             model.addAttribute("newsletter", nwletter);
             model.addAttribute("articles", articles);
             return "newsletterview";
