@@ -410,43 +410,28 @@
                     <a href="#">Content Manager</a>
                     <a href="#" class="my-account">My Account</a>
                 </nav>
-    </div>
+            </div>
 
 
     <div class="content">
         <h1 class="title-container">Quarterly Newsletter</h1>
         <div class="title-container">
             <div style="display: flex; align-items: center;">
-                <h2>${newsletter.title}</h2>
+                <h2>${article.title}</h2>
             </div>
-    </div>
+        </div>
 
-
-    <div class="newsletter-content">
-        <c:choose>
-            <c:when test="${empty articles}">
-                <div class="empty-state">
-                    No Articles have been published in this newsletter yet.
+         <div class="article-subtitle">${article.subtitle}</div>
+         <div class="article-date">
+                             <fmt:formatDate value="${article.addedDate}" pattern="MMMM dd, yyyy"/>
+         </div>
+                <div class="article-content">
+                    <c:out value="${article.content}" escapeXml="false"/>
                 </div>
-            </c:when>
-            <c:otherwise>
-                <div class="articles-grid">
-                    <c:forEach items="${articles}" var="article">
-                        <div class="article-card">
-                            <h2 class="article-title">${article.title}</h2>
-                            <div class="article-subtitle">${article.subtitle}</div>
-                            <div class="article-summary">${article.summary}</div>
-                            <div class="article-date">
-                                <fmt:formatDate value="${article.addedDate}" pattern="MMMM dd, yyyy"/>
-                            </div>
-                        </div>
-                    </c:forEach>
-                </div>
-            </c:otherwise>
-        </c:choose>
+            </div>
+        </div>
     </div>
 
 
-    </div>
 </body>
 </html>

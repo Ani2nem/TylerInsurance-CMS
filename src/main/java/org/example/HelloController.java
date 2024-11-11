@@ -353,6 +353,19 @@ public String publishNewsletter(@RequestParam Integer year,
 
     }
 
+    @GetMapping("/articleview")
+    public String viewArticle(@RequestParam("id") Long id, Model model){
+
+        Article article=articleRepository.findById(id).orElse(null);
+
+        if(article!=null){
+            model.addAttribute("article",article);
+            return "userarticleview";
+        }
+
+        return "error finding article";
+    }
+
     // Handle form submission and save content
     @PostMapping("/display")
     public String saveContent(@RequestParam("name") String name, Model model) {
